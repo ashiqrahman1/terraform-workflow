@@ -1,4 +1,12 @@
 terraform {
+  backend "remote" {
+    hostname     = "app.terraform.io"
+    organization = "ashiqrahmantesting"
+
+    workspaces {
+      name = "terraform-workflow"
+    }
+  }
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -18,4 +26,8 @@ data "aws_ssm_parameter" "my-amzn-linux-ami" {
 resource "aws_instance" "test" {
   ami           = data.aws_ssm_parameter.my-amzn-linux-ami.value
   instance_type = var.instance_type
+}
+
+output "public_ip" {
+  value = aws_instance.test.public_ip
 }
